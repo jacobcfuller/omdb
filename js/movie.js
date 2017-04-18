@@ -6,6 +6,9 @@ $(document).ready(() => {
   });
 });
 
+/*Pull movies with omdb, and for each movie, output a card with the title and
+  poster. If no poster, give stock image "no picture available"
+*/
 function getMovies(searchText){
   axios.get('http://www.omdbapi.com?s='+searchText)
     .then((response) => {
@@ -27,22 +30,26 @@ function getMovies(searchText){
       } else {
       let movies = response.data.Search;
       $.each(movies, (index, movie) => {
+        //Check for poster
+        if(movie.Poster === "N/A"){
+        movie.Poster = "No_picture_available.png";
+        }
+        //Create card for movie
         output += `
           <div class="col s12 m4">
           <a onclick="movieSelected('${movie.imdbID}')" href="#">
-            <div class="card blue hoverable">
+            <div class="card teal darken-2 hoverable">
               <div class="card-content white-text">
                 <span class="card-title">${movie.Title}</span>
-              </div>
-              <div class="card-image">
-                <img src="${movie.Poster}">
+                <div class="card-image">
+                  <img src="${movie.Poster}">
+                </div>
               </div>
             </div>
           </a>    
           </div>          
         `;
       });
-      console.log(output);
       $('#movies').html(output);
     }
     })
@@ -51,11 +58,13 @@ function getMovies(searchText){
     });
 }
 
+/*modify url with imdb ID*/
 function movieSelected(id){
   window.location = 'movie.html?movieId='+id;
   return false;
 }
 
+/* Get detailed data for the movie. parse params to get the movie id*/
 function getMovie(){
   var urlParams = new URLSearchParams(window.location.search)
   movieId = urlParams.get('movieId')
@@ -64,13 +73,12 @@ function getMovie(){
     .then((response) => {
       console.log(response);
       let movie = response.data;
-
+      if(movie.Poster === "N/A"){
+        movie.Poster = "No_picture_available.png";
+      }
       let output =`
         <div class="row">
-          <div class="col-md-4">
-            <img src="${movie.Poster}" class="thumbnail">
-          </div>
-          <div class="col-md-8">
+          <div class="col l8 m12 s12 ">
             <h2>${movie.Title}</h2>
             <ul class="list-group">
               <li class="list-group-item"><strong>Genre:</strong> ${movie.Genre}</li>
@@ -82,14 +90,15 @@ function getMovie(){
               <li class="list-group-item"><strong>Actors:</strong> ${movie.Actors}</li>
             </ul>
           </div>
-        </div>
-        <div class="row">
+          <div class="col l4 m12 s12">
+            <img src="${movie.Poster}" class="thumbnail">
+          </div>
           <div class="well">
             <h3>Plot</h3>
             ${movie.Plot}
             <hr>
-            <a href="http://imdb.com/title/${movie.imdbID}" target="_blank" class="btn btn-primary">View IMDB</a>
-            <a href="omdb_search.html" class="btn btn-default">Go Back To Search</a>
+            <a href="http://imdb.com/title/${movie.imdbID}" target="_blank" class="btn">View IMDB</a>
+            <a href="omdb_search.html" class="btn">Go Back To Search</a>
           </div>
         </div>
       `;
