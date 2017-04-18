@@ -24,7 +24,7 @@ function getMovies(searchText){
                 <span class="card-title">Movie Not Found :(</span>
               </div>
             </div>
-          </div>          
+          </div>
         `;
         $('#movies').html(noOutput);
       } else {
@@ -46,8 +46,8 @@ function getMovies(searchText){
                 </div>
               </div>
             </div>
-          </a>    
-          </div>          
+          </a>
+          </div>
         `;
       });
       $('#movies').html(output);
@@ -76,6 +76,7 @@ function getMovie(){
       if(movie.Poster === "N/A"){
         movie.Poster = "No_picture_available.png";
       }
+      /* The following output html displays the movie details on the movie.html page*/
       let output =`
         <div class="row">
           <div class="col l8 m12 s12 ">
